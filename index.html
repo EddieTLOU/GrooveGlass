@@ -7,101 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --apple-bg: #f2f2f7; }
-        body {
-            background-color: var(--apple-bg);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        /* Vinyl Styling */
-        .record-outer {
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2c2c2c 0%, #000 100%);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        /* Vinyl grooves texture */
-        .record-outer::before {
-            content: "";
-            position: absolute;
-            inset: 6px;
-            border-radius: 50%;
-            background: repeating-radial-gradient(circle, transparent 0, transparent 2px, rgba(255,255,255,0.03) 3px);
-            pointer-events: none;
-        }
-
-        .album-art {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid #000;
-            object-fit: cover;
-            z-index: 10;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
+        body { background-color: var(--apple-bg); font-family: -apple-system, sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        /* Vinyl UI */
+        .record-outer { width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, #2c2c2c 0%, #000 100%); position: relative; display: flex; align-items: center; justify-content: center; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+        .record-outer::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: repeating-radial-gradient(circle, transparent 0, transparent 2px, rgba(255,255,255,0.03) 3px); pointer-events: none; }
+        .album-art { width: 120px; height: 120px; border-radius: 50%; border: 4px solid #000; object-fit: cover; z-index: 10; }
+        
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .playing { animation: rotate 18s linear infinite; }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 32px;
-            padding: 24px 48px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            margin-top: 40px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.4);
-        }
-
-        .spotify-btn {
-            background-color: #1DB954;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
-        }
-        .spotify-btn:hover { 
-            transform: scale(1.04);
-            background-color: #1ed760;
-        }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 32px; padding: 24px; text-align: center; border: 1px solid rgba(255,255,255,0.4); margin-top: 40px; min-width: 280px; }
+        .spotify-btn { background-color: #1DB954; display: flex; align-items: center; gap: 12px; color: white; padding: 14px 28px; border-radius: 50px; font-weight: 600; transition: all 0.2s; cursor: pointer; }
+        .spotify-btn:hover { transform: scale(1.05); background-color: #1ed760; }
     </style>
 </head>
 <body>
 
-    <!-- Login Screen -->
+    <!-- Auth Screen -->
     <div id="auth-section" class="flex flex-col items-center">
-        <div class="mb-12 flex flex-col items-center">
-            <div class="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mb-6 shadow-xl">
-                 <svg width="45" height="45" viewBox="0 0 24 24" fill="#1DB954">
-                    <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.858-1.746-6.456-2.14-10.696-1.172-.406.094-.816-.16-.91-.564-.094-.406.16-.816.564-.91 4.63-1.06 8.624-.608 11.822 1.344.354.218.464.676.248 1.028zm1.474-3.26c-.272.44-.848.58-1.288.308-3.27-2.01-8.254-2.592-12.12-1.418-.496.15-1.022-.132-1.172-.628s.132-1.022.628-1.172c4.406-1.336 9.904-.686 13.644 1.61.44.272.58.848.308 1.288zm.126-3.414c-3.922-2.328-10.386-2.542-14.13-1.404-.602.184-1.238-.162-1.422-.764s.162-1.238.764-1.422c4.298-1.306 11.436-1.042 15.968 1.648.542.322.72.1.4.1.72-.542-.322-.72-.1-1.04-.4z"/>
-                </svg>
-            </div>
-            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">GrooveGlass</h1>
-            <p class="text-gray-500 mt-2 font-medium">Your Spotify, on vinyl.</p>
+        <div class="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mb-6 shadow-xl">
+            <svg width="45" height="45" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.858-1.746-6.456-2.14-10.696-1.172-.406.094-.816-.16-.91-.564-.094-.406.16-.816.564-.91 4.63-1.06 8.624-.608 11.822 1.344.354.218.464.676.248 1.028zm1.474-3.26c-.272.44-.848.58-1.288.308-3.27-2.01-8.254-2.592-12.12-1.418-.496.15-1.022-.132-1.172-.628s.132-1.022.628-1.172c4.406-1.336 9.904-.686 13.644 1.61.44.272.58.848.308 1.288zm.126-3.414c-3.922-2.328-10.386-2.542-14.13-1.404-.602.184-1.238-.162-1.422-.764s.162-1.238.764-1.422c4.298-1.306 11.436-1.042 15.968 1.648.542.322.72.1.4.1.72-.542-.322-.72-.1-1.04-.4z"/></svg>
         </div>
-        
-        <button onclick="login()" class="spotify-btn">
-            Connect Spotify
-        </button>
+        <h1 class="text-3xl font-bold mb-8">GrooveGlass</h1>
+        <button id="login-button" class="spotify-btn">Connect Spotify</button>
     </div>
 
     <!-- Player Screen -->
@@ -110,67 +39,110 @@
             <img id="track-art" src="" class="album-art">
             <div class="absolute w-4 h-4 bg-[#f2f2f7] rounded-full z-20 shadow-inner"></div>
         </div>
-
         <div class="glass-card">
-            <h1 id="track-title" class="text-2xl font-bold tracking-tight text-gray-900">No Song Playing</h1>
-            <p id="track-artist" class="text-gray-500 font-semibold mt-1 uppercase tracking-widest text-xs">Ready when you are</p>
+            <h1 id="track-title" class="text-xl font-bold">No Song Playing</h1>
+            <p id="track-artist" class="text-gray-500 font-semibold mt-1 uppercase tracking-widest text-[10px]">Play something on Spotify</p>
         </div>
     </div>
 
     <script>
-        const CLIENT_ID = '4333e8f4c8224103b6ac0089cba6d880'; 
-        const REDIRECT_URI = 'https://eddietlou.github.io/GrooveGlass/';
+        const clientId = '4333e8f4c8224103b6ac0089cba6d880';
+        const redirectUri = 'https://eddietlou.github.io/GrooveGlass/';
 
-        function login() {
-            const authUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=user-read-currently-playing`;
-            window.location.href = authUrl;
+        // PKCE Helpers
+        const generateRandomString = (length) => {
+            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const values = crypto.getRandomValues(new Uint8Array(length));
+            return values.reduce((acc, x) => acc + possible[x % possible.length], "");
+        };
+
+        const sha256 = async (plain) => {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(plain);
+            return window.crypto.subtle.digest('SHA-256', data);
+        };
+
+        const base64encode = (input) => {
+            return btoa(String.fromCharCode(...new Uint8Array(input)))
+                .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+        };
+
+        // 1. Start Login Flow
+        document.getElementById('login-button').addEventListener('click', async () => {
+            const codeVerifier = generateRandomString(64);
+            const hashed = await sha256(codeVerifier);
+            const codeChallenge = base64encode(hashed);
+
+            window.localStorage.setItem('code_verifier', codeVerifier);
+
+            const params = new URLSearchParams({
+                response_type: 'code',
+                client_id: clientId,
+                scope: 'user-read-currently-playing',
+                code_challenge_method: 'S256',
+                code_challenge: codeChallenge,
+                redirect_uri: redirectUri,
+            });
+
+            window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
+        });
+
+        // 2. Handle the Code Callback
+        const urlParams = new URLSearchParams(window.location.search);
+        let code = urlParams.get('code');
+
+        if (code) {
+            handleToken();
         }
 
-        function getParams() {
-            const hash = window.location.hash.substring(1);
-            return hash.split('&').reduce((acc, item) => {
-                const [key, value] = item.split('=');
-                acc[key] = decodeURIComponent(value);
-                return acc;
-            }, {});
+        async function handleToken() {
+            const codeVerifier = window.localStorage.getItem('code_verifier');
+            const response = await fetch('https://accounts.spotify.com/api/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    client_id: clientId,
+                    grant_type: 'authorization_code',
+                    code: code,
+                    redirect_uri: redirectUri,
+                    code_verifier: codeVerifier,
+                }),
+            });
+
+            const data = await response.json();
+            if (data.access_token) {
+                window.localStorage.setItem('access_token', data.access_token);
+                window.history.pushState({}, null, redirectUri); // Clean URL
+                startPlayer(data.access_token);
+            }
         }
 
-        const token = getParams().access_token;
-
-        if (token) {
+        // 3. Player Logic
+        function startPlayer(token) {
             document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('player-section').classList.remove('hidden');
-            // Clean the URL hash
-            window.history.pushState("", document.title, window.location.pathname);
 
             async function update() {
                 try {
                     const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
-                    
                     if (res.status === 200) {
-                        const data = await res.json();
-                        document.getElementById('track-title').innerText = data.item.name;
-                        document.getElementById('track-artist').innerText = data.item.artists[0].name;
-                        document.getElementById('track-art').src = data.item.album.images[0].url;
-                        
-                        if (data.is_playing) {
-                            document.getElementById('vinyl-container').classList.add('playing');
-                        } else {
-                            document.getElementById('vinyl-container').classList.remove('playing');
-                        }
-                    } else if (res.status === 401) {
-                        // Token expired, send back to login
-                        window.location.href = REDIRECT_URI;
+                        const song = await res.json();
+                        document.getElementById('track-title').innerText = song.item.name;
+                        document.getElementById('track-artist').innerText = song.item.artists[0].name;
+                        document.getElementById('track-art').src = song.item.album.images[0].url;
+                        document.getElementById('vinyl-container').classList.toggle('playing', song.is_playing);
                     }
-                } catch (e) {
-                    console.error("Update error", e);
-                }
+                } catch (e) {}
             }
-            setInterval(update, 2500); // Check every 2.5 seconds
+            setInterval(update, 3000);
             update();
         }
+
+        // Auto-load if token exists
+        const existingToken = window.localStorage.getItem('access_token');
+        if (existingToken && !code) startPlayer(existingToken);
     </script>
 </body>
 </html>
