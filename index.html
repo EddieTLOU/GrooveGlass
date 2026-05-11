@@ -7,14 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <style>
-        :root { --accent: #1DB954; --bg: #000000; }
+        :root { --dynamic-bg: #121212; }
         body { 
-            background: var(--bg); transition: background 2s ease;
+            background: var(--dynamic-bg); transition: background 2s ease;
             font-family: -apple-system, sans-serif; height: 100vh;
             display: flex; align-items: center; justify-content: center; margin: 0;
         }
 
-        /* LIQUID GLASS CARD */
+        /* Apple Liquid Glass Card */
         .glass-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(40px) saturate(180%);
@@ -25,69 +25,67 @@
             text-align: center; color: white;
         }
 
-        /* MD VINYL RECORD */
-        .record-container {
+        /* 3D Vinyl Record */
+        .vinyl-container {
             position: relative; width: 320px; height: 320px;
             margin-bottom: 40px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
         }
-        .vinyl {
+        .record {
             width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, #222 0%, #000 100%);
+            background: radial-gradient(circle, #2a2a2a 0%, #000 100%);
             display: flex; align-items: center; justify-content: center;
-            position: relative; border: 1px solid #111;
+            position: relative;
         }
-        .vinyl::after {
-            content: ""; position: absolute; inset: 5px; border-radius: 50%;
+        .record::after {
+            content: ""; position: absolute; inset: 4px; border-radius: 50%;
             background: repeating-radial-gradient(circle, transparent 0, transparent 1px, rgba(255,255,255,0.03) 2px);
         }
         .album-art {
-            width: 130px; height: 130px; border-radius: 50%;
+            width: 135px; height: 135px; border-radius: 50%;
             z-index: 10; object-fit: cover; border: 4px solid #0a0a0a;
         }
-        .center-dot {
-            position: absolute; width: 12px; height: 12px; background: white;
+        .hole {
+            position: absolute; width: 14px; height: 14px; background: white;
             border-radius: 50%; z-index: 20; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
         }
 
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .is-playing { animation: spin 15s linear infinite; }
+        .spinning { animation: spin 18s linear infinite; }
 
-        /* SPOTIFY BUTTON */
-        .spotify-btn {
-            background: #1DB954; color: white; padding: 16px 32px;
-            border-radius: 50px; font-weight: 700; font-size: 1.1rem;
+        .apple-btn {
+            background: #1DB954; color: white; padding: 18px 36px;
+            border-radius: 50px; font-weight: 800; font-size: 1.1rem;
             display: inline-flex; align-items: center; gap: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .spotify-btn:hover { transform: scale(1.05); background: #1ed760; }
+        .apple-btn:hover { transform: scale(1.05); background: #1ed760; }
     </style>
 </head>
 <body>
 
     <div id="login-view" class="flex flex-col items-center">
         <div class="glass-card">
-            <div class="mb-8 flex justify-center">
+            <div class="mb-10 flex justify-center">
                 <svg width="60" height="60" viewBox="0 0 24 24" fill="#1DB954">
                     <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.858-1.746-6.456-2.14-10.696-1.172-.406.094-.816-.16-.91-.564-.094-.406.16-.816.564-.91 4.63-1.06 8.624-.608 11.822 1.344.354.218.464.676.248 1.028zm1.474-3.26c-.272.44-.848.58-1.288.308-3.27-2.01-8.254-2.592-12.12-1.418-.496.15-1.022-.132-1.172-.628s.132-1.022.628-1.172c4.406-1.336 9.904-.686 13.644 1.61.44.272.58.848.308 1.288zm.126-3.414c-3.922-2.328-10.386-2.542-14.13-1.404-.602.184-1.238-.162-1.422-.764s.162-1.238.764-1.422c4.298-1.306 11.436-1.042 15.968 1.648.542.322.72.64.4.1.72-.542-.322-.72-.1-1.04-.4z"/>
                 </svg>
             </div>
             <h1 class="text-4xl font-black mb-10 tracking-tight">GrooveGlass</h1>
-            <button onclick="startAuth()" class="spotify-btn">
-                Connect Spotify
-            </button>
+            <button onclick="login()" class="apple-btn">Connect Spotify</button>
         </div>
     </div>
 
     <div id="player-view" class="hidden flex flex-col items-center">
-        <div class="record-container">
-            <div id="vinyl-disk" class="vinyl">
-                <img id="now-playing-art" src="" crossorigin="anonymous" class="album-art">
-                <div class="center-dot"></div>
+        <div class="vinyl-container">
+            <div id="disk" class="record">
+                <img id="art" src="" crossorigin="anonymous" class="album-art">
+                <div class="hole"></div>
             </div>
         </div>
-        <div class="glass-card min-w-[320px]">
-            <h2 id="song-name" class="text-2xl font-bold mb-1">Loading...</h2>
-            <p id="artist-name" class="text-sm font-semibold opacity-50 tracking-widest uppercase"></p>
+        <div class="glass-card min-w-[340px]">
+            <h2 id="title" class="text-2xl font-bold mb-1 truncate">Nothing Playing</h2>
+            <p id="artist" class="text-sm font-semibold opacity-50 tracking-widest uppercase"></p>
         </div>
     </div>
 
@@ -96,24 +94,40 @@
         const REDIRECT_URI = 'https://eddietlou.github.io/GrooveGlass/';
         const thief = new ColorThief();
 
-        // PKCE REQUIRED FOR 2026
-        async function startAuth() {
-            const verifier = Math.random().toString(36).substring(2, 15);
+        // PKCE S256 Crypto Functions
+        const generateRandomString = (l) => {
+            const p = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            return [...crypto.getRandomValues(new Uint8Array(l))].map(x => p[x % p.length]).join('');
+        };
+
+        const sha256 = async (plain) => {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(plain);
+            return window.crypto.subtle.digest('SHA-256', data);
+        };
+
+        const base64encode = (input) => {
+            return btoa(String.fromCharCode(...new Uint8Array(input)))
+                .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+        };
+
+        async function login() {
+            const verifier = generateRandomString(64);
+            const challenge = base64encode(await sha256(verifier));
             localStorage.setItem('v', verifier);
+
             const params = new URLSearchParams({
-                response_type: 'code', // MUST BE CODE
+                response_type: 'code',
                 client_id: CLIENT_ID,
                 scope: 'user-read-currently-playing',
                 redirect_uri: REDIRECT_URI,
-                code_challenge_method: 'plain',
-                code_challenge: verifier
+                code_challenge_method: 'S256',
+                code_challenge: challenge
             });
             window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-
+        const code = new URLSearchParams(window.location.search).get('code');
         if (code) {
             (async () => {
                 const res = await fetch('https://accounts.spotify.com/api/token', {
@@ -131,12 +145,12 @@
                 if (data.access_token) {
                     localStorage.setItem('t', data.access_token);
                     window.history.pushState({}, null, REDIRECT_URI);
-                    runPlayer(data.access_token);
+                    run(data.access_token);
                 }
             })();
         }
 
-        function runPlayer(token) {
+        function run(token) {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('player-view').classList.remove('hidden');
 
@@ -147,10 +161,10 @@
                     });
                     if (res.status === 200) {
                         const s = await res.json();
-                        document.getElementById('song-name').innerText = s.item.name;
-                        document.getElementById('artist-name').innerText = s.item.artists[0].name;
+                        document.getElementById('title').innerText = s.item.name;
+                        document.getElementById('artist').innerText = s.item.artists[0].name;
                         
-                        const img = document.getElementById('now-playing-art');
+                        const img = document.getElementById('art');
                         if (img.src !== s.item.album.images[0].url) {
                             img.src = s.item.album.images[0].url;
                             img.onload = () => {
@@ -158,7 +172,7 @@
                                 document.body.style.background = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
                             };
                         }
-                        document.getElementById('vinyl-disk').className = s.is_playing ? 'vinyl is-playing' : 'vinyl';
+                        document.getElementById('disk').classList.toggle('spinning', s.is_playing);
                     }
                 } catch(e) {}
             }
@@ -167,7 +181,7 @@
         }
 
         const saved = localStorage.getItem('t');
-        if (saved && !code) runPlayer(saved);
+        if (saved && !code) run(saved);
     </script>
 </body>
 </html>
