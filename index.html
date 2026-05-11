@@ -3,137 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrooveGlass | Pro Vinyl</title>
+    <title>GrooveGlass</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <style>
-        :root { --bg-color: #121212; }
-        body {
-            background-color: var(--bg-color);
-            transition: background-color 2s ease;
-            height: 100vh; display: flex; align-items: center; justify-content: center;
-            font-family: -apple-system, sans-serif; margin: 0; overflow: hidden;
+        :root { --accent: #1DB954; --bg: #000000; }
+        body { 
+            background: var(--bg); transition: background 2s ease;
+            font-family: -apple-system, sans-serif; height: 100vh;
+            display: flex; align-items: center; justify-content: center; margin: 0;
         }
 
-        /* THE VINYL PLAYER */
-        .vinyl-container {
-            position: relative; width: 350px; height: 350px;
-            filter: drop-shadow(0 40px 70px rgba(0,0,0,0.6));
+        /* LIQUID GLASS CARD */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px; padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            text-align: center; color: white;
         }
-        .record {
+
+        /* MD VINYL RECORD */
+        .record-container {
+            position: relative; width: 320px; height: 320px;
+            margin-bottom: 40px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
+        }
+        .vinyl {
             width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, #2a2a2a 0%, #000 100%);
+            background: radial-gradient(circle, #222 0%, #000 100%);
             display: flex; align-items: center; justify-content: center;
-            position: relative; border: 2px solid #1a1a1a;
+            position: relative; border: 1px solid #111;
         }
-        /* Realistic grooves */
-        .record::after {
-            content: ""; position: absolute; inset: 4px; border-radius: 50%;
-            background: repeating-radial-gradient(circle, transparent 0, transparent 1.5px, rgba(255,255,255,0.03) 2px);
+        .vinyl::after {
+            content: ""; position: absolute; inset: 5px; border-radius: 50%;
+            background: repeating-radial-gradient(circle, transparent 0, transparent 1px, rgba(255,255,255,0.03) 2px);
         }
         .album-art {
-            width: 140px; height: 140px; border-radius: 50%;
-            border: 4px solid #080808; z-index: 10; object-fit: cover;
+            width: 130px; height: 130px; border-radius: 50%;
+            z-index: 10; object-fit: cover; border: 4px solid #0a0a0a;
         }
-        .hole {
+        .center-dot {
             position: absolute; width: 12px; height: 12px; background: white;
             border-radius: 50%; z-index: 20; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
         }
 
-        /* Animations */
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .spinning { animation: rotate 15s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .is-playing { animation: spin 15s linear infinite; }
 
-        /* Liquid Glass UI */
-        .glass-ui {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 40px; padding: 25px 50px;
-            text-align: center; margin-top: 50px; color: white;
+        /* SPOTIFY BUTTON */
+        .spotify-btn {
+            background: #1DB954; color: white; padding: 16px 32px;
+            border-radius: 50px; font-weight: 700; font-size: 1.1rem;
+            display: inline-flex; align-items: center; gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .connect-btn {
-            background: white; color: black; padding: 15px 35px;
-            border-radius: 30px; font-weight: 800; font-size: 1.1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.3s;
-        }
-        .connect-btn:hover { transform: scale(1.05); background: #1DB954; color: white; }
+        .spotify-btn:hover { transform: scale(1.05); background: #1ed760; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="glass-ui">
-            <h1 class="text-4xl font-black mb-8">GrooveGlass</h1>
-            <button onclick="login()" class="connect-btn">Connect Spotify</button>
+    <div id="login-view" class="flex flex-col items-center">
+        <div class="glass-card">
+            <div class="mb-8 flex justify-center">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="#1DB954">
+                    <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.858-1.746-6.456-2.14-10.696-1.172-.406.094-.816-.16-.91-.564-.094-.406.16-.816.564-.91 4.63-1.06 8.624-.608 11.822 1.344.354.218.464.676.248 1.028zm1.474-3.26c-.272.44-.848.58-1.288.308-3.27-2.01-8.254-2.592-12.12-1.418-.496.15-1.022-.132-1.172-.628s.132-1.022.628-1.172c4.406-1.336 9.904-.686 13.644 1.61.44.272.58.848.308 1.288zm.126-3.414c-3.922-2.328-10.386-2.542-14.13-1.404-.602.184-1.238-.162-1.422-.764s.162-1.238.764-1.422c4.298-1.306 11.436-1.042 15.968 1.648.542.322.72.64.4.1.72-.542-.322-.72-.1-1.04-.4z"/>
+                </svg>
+            </div>
+            <h1 class="text-4xl font-black mb-10 tracking-tight">GrooveGlass</h1>
+            <button onclick="startAuth()" class="spotify-btn">
+                Connect Spotify
+            </button>
         </div>
     </div>
 
-    <div id="player-screen" class="hidden flex flex-col items-center">
-        <div class="vinyl-container">
-            <div id="record-disk" class="record">
-                <img id="art-display" src="" crossorigin="anonymous" class="album-art">
-                <div class="hole"></div>
+    <div id="player-view" class="hidden flex flex-col items-center">
+        <div class="record-container">
+            <div id="vinyl-disk" class="vinyl">
+                <img id="now-playing-art" src="" crossorigin="anonymous" class="album-art">
+                <div class="center-dot"></div>
             </div>
         </div>
-
-        <div class="glass-ui min-w-[320px]">
-            <h2 id="song-name" class="text-2xl font-bold">Waiting for Music</h2>
-            <p id="artist-name" class="text-sm opacity-60 font-semibold mt-1 tracking-widest uppercase"></p>
+        <div class="glass-card min-w-[320px]">
+            <h2 id="song-name" class="text-2xl font-bold mb-1">Loading...</h2>
+            <p id="artist-name" class="text-sm font-semibold opacity-50 tracking-widest uppercase"></p>
         </div>
     </div>
 
     <script>
         const CLIENT_ID = '4333e8f4c8224103b6ac0089cba6d880';
         const REDIRECT_URI = 'https://eddietlou.github.io/GrooveGlass/';
-        const colorThief = new ColorThief();
+        const thief = new ColorThief();
 
-        function login() {
-            const url = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=user-read-currently-playing`;
-            window.location.href = url;
+        // PKCE REQUIRED FOR 2026
+        async function startAuth() {
+            const verifier = Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('v', verifier);
+            const params = new URLSearchParams({
+                response_type: 'code', // MUST BE CODE
+                client_id: CLIENT_ID,
+                scope: 'user-read-currently-playing',
+                redirect_uri: REDIRECT_URI,
+                code_challenge_method: 'plain',
+                code_challenge: verifier
+            });
+            window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
         }
 
-        const params = new URLSearchParams(window.location.hash.substring(1));
-        const token = params.get('access_token');
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
 
-        if (token) {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('player-screen').classList.remove('hidden');
-            window.history.pushState("", "", REDIRECT_URI);
+        if (code) {
+            (async () => {
+                const res = await fetch('https://accounts.spotify.com/api/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        client_id: CLIENT_ID,
+                        grant_type: 'authorization_code',
+                        code: code,
+                        redirect_uri: REDIRECT_URI,
+                        code_verifier: localStorage.getItem('v')
+                    })
+                });
+                const data = await res.json();
+                if (data.access_token) {
+                    localStorage.setItem('t', data.access_token);
+                    window.history.pushState({}, null, REDIRECT_URI);
+                    runPlayer(data.access_token);
+                }
+            })();
+        }
 
-            async function update() {
+        function runPlayer(token) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('player-view').classList.remove('hidden');
+
+            async function sync() {
                 try {
                     const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
-
                     if (res.status === 200) {
-                        const song = await res.json();
-                        document.getElementById('song-name').innerText = song.item.name;
-                        document.getElementById('artist-name').innerText = song.item.artists[0].name;
+                        const s = await res.json();
+                        document.getElementById('song-name').innerText = s.item.name;
+                        document.getElementById('artist-name').innerText = s.item.artists[0].name;
                         
-                        const img = document.getElementById('art-display');
-                        if (img.src !== song.item.album.images[0].url) {
-                            img.src = song.item.album.images[0].url;
+                        const img = document.getElementById('now-playing-art');
+                        if (img.src !== s.item.album.images[0].url) {
+                            img.src = s.item.album.images[0].url;
                             img.onload = () => {
-                                try {
-                                    const color = colorThief.getColor(img);
-                                    document.body.style.backgroundColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-                                } catch(e) { console.log("Color grab blocked by CORS"); }
+                                const c = thief.getColor(img);
+                                document.body.style.background = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
                             };
                         }
-
-                        document.getElementById('record-disk').classList.toggle('spinning', song.is_playing);
-                    } else if (res.status === 204) {
-                        document.getElementById('song-name').innerText = "Nothing Playing";
-                        document.getElementById('artist-name').innerText = "Start a song on your app";
-                        document.getElementById('record-disk').classList.remove('spinning');
+                        document.getElementById('vinyl-disk').className = s.is_playing ? 'vinyl is-playing' : 'vinyl';
                     }
-                } catch (e) { console.error(e); }
+                } catch(e) {}
             }
-            setInterval(update, 2500);
-            update();
+            setInterval(sync, 3000);
+            sync();
         }
+
+        const saved = localStorage.getItem('t');
+        if (saved && !code) runPlayer(saved);
     </script>
 </body>
 </html>
