@@ -3,78 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrooveGlass</title>
+    <title>GrooveGlass | MD Vinyl</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <style>
-        :root { --main-color: #121212; }
+        :root { --bg-main: #1a1a1a; }
         body { 
-            background: var(--main-color); transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; overflow: hidden;
+            background: var(--bg-main); transition: background 2s ease;
+            height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center;
+            font-family: -apple-system, sans-serif; overflow: hidden;
         }
 
-        /* LIQUID APPLE GLASS DESIGN */
-        .glass-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(35px) saturate(200%);
-            -webkit-backdrop-filter: blur(35px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 60px; padding: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        /* BLUR MESH BACKGROUND */
+        .mesh-gradient {
+            position: fixed; inset: 0; z-index: -1;
+            filter: blur(100px); opacity: 0.6;
+        }
+
+        /* MD VINYL SLEEVE & RECORD */
+        .player-container {
+            position: relative; width: 340px; height: 340px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* The Square Album Cover (The Sleeve) */
+        .sleeve {
+            width: 300px; height: 300px; background: #222;
+            z-index: 10; border-radius: 8px; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: absolute; left: 0;
+        }
+        .sleeve img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* The Spinning Record (Sliding out) */
+        .vinyl {
+            width: 290px; height: 290px; border-radius: 50%;
+            background: radial-gradient(circle, #222 0%, #000 100%);
+            position: absolute; right: -60px; /* Slides out like MD Vinyl */
+            z-index: 5; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .vinyl::after {
+            content: ""; position: absolute; inset: 5px; border-radius: 50%;
+            background: repeating-radial-gradient(circle, transparent 0, transparent 1px, rgba(255,255,255,0.03) 2px);
+        }
+        .vinyl-art {
+            width: 110px; height: 110px; border-radius: 50%;
+            border: 3px solid #000; object-fit: cover;
+        }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spinning { animation: rotate 15s linear infinite; }
+
+        /* TEXT PANEL */
+        .info-card {
+            position: absolute; bottom: -120px; width: 100%;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(30px);
+            border-radius: 30px; padding: 20px; border: 1px solid rgba(255,255,255,0.1);
             text-align: center; color: white;
         }
 
-        /* TRANSPARENT VINYL PLAYER */
-        .vinyl-wrapper {
-            position: relative; width: 340px; height: 340px; margin-bottom: 30px;
-            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.5));
+        .spotify-btn {
+            background: #1DB954; color: white; padding: 15px 30px;
+            border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 10px;
         }
-        .vinyl-record {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, rgba(40,40,40,0.8) 0%, rgba(0,0,0,0.9) 100%);
-            display: flex; align-items: center; justify-content: center;
-            position: relative; border: 1px solid rgba(255,255,255,0.1);
-        }
-        /* The Grooves */
-        .vinyl-record::after {
-            content: ""; position: absolute; inset: 5px; border-radius: 50%;
-            background: repeating-radial-gradient(circle, transparent 0, transparent 1px, rgba(255,255,255,0.04) 2px);
-        }
-        .album-art {
-            width: 135px; height: 135px; border-radius: 50%;
-            z-index: 10; object-fit: cover; border: 4px solid #000;
-        }
-        .center-pin {
-            position: absolute; width: 14px; height: 14px; background: white;
-            border-radius: 50%; z-index: 20; box-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .spinning { animation: spin 12s linear infinite; }
-
-        .spotify-logo { width: 50px; margin: 0 auto 20px; filter: drop-shadow(0 0 10px #1DB954); }
     </style>
 </head>
 <body>
 
-    <div id="login-view">
-        <div class="glass-container">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" class="spotify-logo">
-            <h1 class="text-4xl font-black mb-10 tracking-tight">GrooveGlass</h1>
-            <button onclick="login()" class="bg-[#1DB954] text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-lg">Connect Spotify</button>
+    <div id="auth-view" class="flex flex-col items-center">
+        <div class="bg-white/10 backdrop-blur-xl p-12 rounded-[50px] border border-white/20 flex flex-col items-center">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="#1DB954" class="mb-6"><path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.858-1.746-6.456-2.14-10.696-1.172-.406.094-.816-.16-.91-.564-.094-.406.16-.816.564-.91 4.63-1.06 8.624-.608 11.822 1.344.354.218.464.676.248 1.028zm1.474-3.26c-.272.44-.848.58-1.288.308-3.27-2.01-8.254-2.592-12.12-1.418-.496.15-1.022-.132-1.172-.628s.132-1.022.628-1.172c4.406-1.336 9.904-.686 13.644 1.61.44.272.58.848.308 1.288zm.126-3.414c-3.922-2.328-10.386-2.542-14.13-1.404-.602.184-1.238-.162-1.422-.764s.162-1.238.764-1.422c4.298-1.306 11.436-1.042 15.968 1.648.542.322.72.64.4.1.72-.542-.322-.72-.1-1.04-.4z"/></svg>
+            <h1 class="text-white text-3xl font-black mb-8">GrooveGlass</h1>
+            <button onclick="login()" class="spotify-btn">Connect Spotify</button>
         </div>
     </div>
 
-    <div id="player-view" class="hidden flex flex-col items-center">
-        <div class="vinyl-wrapper">
-            <div id="record" class="vinyl-record">
-                <img id="track-img" src="" crossorigin="anonymous" class="album-art">
-                <div class="center-pin"></div>
+    <div id="player-view" class="hidden">
+        <div class="player-container">
+            <div class="vinyl" id="vinyl-disk">
+                <img id="vinyl-art" src="" crossorigin="anonymous" class="vinyl-art">
             </div>
-        </div>
-        <div class="glass-container min-w-[320px]">
-            <h2 id="track-name" class="text-2xl font-bold truncate px-4">Nothing Playing</h2>
-            <p id="artist-name" class="text-sm font-semibold opacity-60 tracking-widest uppercase mt-1"></p>
+            <div class="sleeve">
+                <img id="sleeve-art" src="" crossorigin="anonymous">
+            </div>
+            <div class="info-card">
+                <h2 id="song-name" class="text-xl font-bold truncate">Loading...</h2>
+                <p id="artist-name" class="text-sm opacity-60 uppercase tracking-widest mt-1"></p>
+            </div>
         </div>
     </div>
 
@@ -84,18 +100,11 @@
         const thief = new ColorThief();
 
         async function login() {
-            const verifier = [...crypto.getRandomValues(new Uint8Array(32))].map(b => b.toString(16).padStart(2, '0')).join('');
-            localStorage.setItem('verifier', verifier);
-            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
-            const challenge = btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-
+            const verifier = Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('v', verifier);
             const params = new URLSearchParams({
-                response_type: 'code',
-                client_id: CLIENT_ID,
-                scope: 'user-read-currently-playing',
-                redirect_uri: REDIRECT_URI,
-                code_challenge_method: 'S256',
-                code_challenge: challenge
+                response_type: 'code', client_id: CLIENT_ID, scope: 'user-read-currently-playing',
+                redirect_uri: REDIRECT_URI, code_challenge_method: 'plain', code_challenge: verifier
             });
             window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
         }
@@ -108,13 +117,12 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({
                         client_id: CLIENT_ID, grant_type: 'authorization_code',
-                        code: code, redirect_uri: REDIRECT_URI,
-                        code_verifier: localStorage.getItem('verifier')
+                        code: code, redirect_uri: REDIRECT_URI, code_verifier: localStorage.getItem('v')
                     })
                 });
                 const data = await res.json();
                 if (data.access_token) {
-                    localStorage.setItem('token', data.access_token);
+                    localStorage.setItem('t', data.access_token);
                     window.history.pushState({}, null, REDIRECT_URI);
                     start(data.access_token);
                 }
@@ -122,7 +130,7 @@
         }
 
         function start(token) {
-            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('auth-view').style.display = 'none';
             document.getElementById('player-view').classList.remove('hidden');
 
             async function update() {
@@ -131,27 +139,31 @@
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (res.status === 200) {
-                        const song = await res.json();
-                        document.getElementById('track-name').innerText = song.item.name;
-                        document.getElementById('artist-name').innerText = song.item.artists[0].name;
+                        const s = await res.json();
+                        document.getElementById('song-name').innerText = s.item.name;
+                        document.getElementById('artist-name').innerText = s.item.artists[0].name;
                         
-                        const img = document.getElementById('track-img');
-                        if (img.src !== song.item.album.images[0].url) {
-                            img.src = song.item.album.images[0].url;
-                            img.onload = () => {
-                                const color = thief.getColor(img);
-                                document.documentElement.style.setProperty('--main-color', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
+                        const artUrl = s.item.album.images[0].url;
+                        const sleeve = document.getElementById('sleeve-art');
+                        const vinylArt = document.getElementById('vinyl-art');
+
+                        if (sleeve.src !== artUrl) {
+                            sleeve.src = artUrl;
+                            vinylArt.src = artUrl;
+                            sleeve.onload = () => {
+                                const c = thief.getColor(sleeve);
+                                document.body.style.background = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
                             };
                         }
-                        document.getElementById('record').classList.toggle('spinning', song.is_playing);
+                        document.getElementById('vinyl-disk').classList.toggle('spinning', s.is_playing);
                     }
                 } catch(e) {}
             }
             setInterval(update, 3000); update();
         }
 
-        const savedToken = localStorage.getItem('token');
-        if (savedToken && !code) start(savedToken);
+        const saved = localStorage.getItem('t');
+        if (saved && !code) start(saved);
     </script>
 </body>
 </html>
